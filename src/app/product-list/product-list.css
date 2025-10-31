@@ -1,0 +1,51 @@
+
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.products-grid .product-card {
+  width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.products-list {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.products-list .product-card {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.products-list .product-card img {
+  margin-right: 15px;
+}
+
+.view-toggle button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.filters select {
+  padding: 5px;
+  margin-left: 10px;
+} 
+
+.input_search{
+display: block;     
+  margin: 0 auto;    
+  width: 50%; 
+  margin-top: 20px;
+
+}
