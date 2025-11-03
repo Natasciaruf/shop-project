@@ -4,6 +4,16 @@
   <button class="btn btn-success" (click)="addProduct()">Aggiungi Prodotto</button>
 </div>
 
+<div class="d-flex justify-content-center align-items-center mb-3">
+  <label for="itemsPerPage" class="me-2">Tipo visualizzazioni: </label>
+  <select id="itemsPerPage" class="form-select w-auto" [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+    <option *ngFor="let option of itemsPerPageOptions" [ngValue]="option">
+      {{ option === 'all' ? 'Tutti' : option }}
+    </option>
+  </select>
+</div>
+
+
 <div class="view-toggle" style="text-align: center; margin-bottom: 20px">
   <button
     (click)="setSelectMode('grid')"
@@ -25,7 +35,7 @@
     [(ngModel)]="searchText"
     aria-label=".form-control-sm"
   />
-  <div class="filters" style="text-align: center; margin-bottom: 20px">
+  <div class="filters" style="text-align: center; margin-bottom: 20px; margin-top: 20px">
     <div class="filters text-center mb-4">
       <!-- <label for="sort" class="form-label me-2">Ordina per:</label> -->
       <select id="sort" class="form-select d-inline-block w-auto" [(ngModel)]="orderType">
@@ -43,19 +53,26 @@
       <div *ngIf="selectMode === 'grid'" class="row g-4">
         <div *ngFor="let product of pagedProducts" class="col-12 col-sm-6 col-md-4 col-lg-3">
           <div class="card h-100 shadow-sm">
-            <img [src]="product.image" class="card-img-top" alt="{{ product.nome }}" />
+            <img [src]="product.image" class="card-img-top product-image" alt="{{ product.nome }}" />
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ product.nome }}</h5>
-              <p class="card-text flex-grow-1">{{ product.description }}</p>
+              <p class="card-title"> <strong>{{ product.nome }}  </strong> {{product.description }}</p>
+              <!-- <p class="card-text flex-grow-1">{{ product.description }}</p> -->
+
               <p class="fw-bold text-primary mb-3">€{{ product.price }}</p>
-                   <div class="d-flex justify-content-between mt-3">
-        <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">Modifica</button>
-       <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">Elimina</button>
-      </div>
+              <div class="btn-group w-100 mt-3" role="group">
+  <button class="btn btn-info btn-sm" (click)="viewProduct(product.id)">
+    Scopro di più
+  </button>
+  <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">
+    Modifica
+  </button>
+  <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
+    Elimina
+  </button>
+</div>
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- Vista LIST -->
@@ -64,9 +81,8 @@
           <thead class="table-light">
             <tr>
               <th scope="col"></th>
-              <th>Immagine</th>
-              <th scope="col">Nome</th>
-              <th scope="col">Descrizione</th>
+              <th scope="col">Immagine</th>
+              <th scope="col">Articolo</th>
               <th scope="col">Prezzo</th>
               <th>Azioni</th>
             </tr>
@@ -74,19 +90,24 @@
           <tbody>
             <tr *ngFor="let product of pagedProducts; let i = index">
               <th scope="row">{{ i + 1 }}</th>
-              <img [src]="product.image" />
-              <td>{{ product.nome }}</td>
-              <td>{{ product.description }}</td>
+              <img [src]="product.image" class="product-image"/>
+
+              <td><strong>{{ product.nome }}  </strong> {{product.description }}</td>
+
+              <!-- <td>{{ product.description }}</td>  -->
               <td>€{{ product.price }}</td>
               <td>
-                <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">
-                  Modifica
-                </button>
-              </td>
-              <td>
-                <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
-                  Elimina
-                </button>
+        <div class="btn-group w-100 mt-3" role="group">
+  <button class="btn btn-info btn-sm" (click)="viewProduct(product.id)">
+    Scopro di più
+  </button>
+  <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">
+    Modifica
+  </button>
+  <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
+    Elimina
+  </button>
+</div>
               </td>
             </tr>
           </tbody>
@@ -94,11 +115,23 @@
       </div>
     </div>
 
-<div class="text-center mt-3" *ngIf="totalPages > 1">
-  <button class="btn btn-sm btn-outline-dark me-2" (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
-  <span>Pagina {{ currentPage }} di {{ totalPages }}</span>
-  <button class="btn btn-sm btn-outline-dark ms-2" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-</div>
+    <div class="text-center mt-3" *ngIf="totalPages > 1">
+      <button
+        class="btn btn-sm btn-outline-dark me-2"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        Prev
+      </button>
+      <span>Pagina {{ currentPage }} di {{ totalPages }}</span>
+      <button
+        class="btn btn-sm btn-outline-dark ms-2"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+      >
+        Next
+      </button>
+    </div>
 
     <p *ngIf="pagedProducts.length === 0" class="text-center mt-4">Nessun prodotto trovato.</p>
   </div>
