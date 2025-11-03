@@ -4,6 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "shop_frontend": {
+      "i18n": {
+        "sourceLocale": "it-IT"
+      },
       "projectType": "application",
       "schematics": {},
       "root": "",

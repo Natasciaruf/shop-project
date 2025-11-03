@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductsService } from '../../service/service';
 import { products } from '../../model/model';
 
 @Component({
@@ -9,6 +10,7 @@ import { products } from '../../model/model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './backoffice-form.html',
+ providers: [ProductsService]
 })
 export class BackofficeForm implements OnInit {
   mode: 'add' | 'edit' = 'add';
@@ -22,6 +24,7 @@ export class BackofficeForm implements OnInit {
     image: '',
   };
 
+  private productsService = inject(ProductsService);
   constructor(private route: ActivatedRoute, public router: Router) {}
 
   ngOnInit() {
@@ -31,13 +34,10 @@ export class BackofficeForm implements OnInit {
         this.mode = 'edit';
         this.productId = +id;
       
-        this.product = {
-          id: this.productId,
-          nome: ' ',
-          description: '',
-          price: 50,
-          image: ' ',
-        };
+        const foundProduct = this.productsService.getProductByid(this.productId)
+        if(foundProduct){
+this.product = {...foundProduct};
+        }
       }
     });
   }

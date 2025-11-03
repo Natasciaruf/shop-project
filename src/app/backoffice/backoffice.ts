@@ -4,11 +4,12 @@ import { products } from '../../model/model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-backoffice',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CurrencyPipe],
   templateUrl: './backoffice.html',
   styleUrls: ['./backoffice.css'],
   providers: [ProductsService]

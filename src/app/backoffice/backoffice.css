@@ -21,7 +21,7 @@
 
 .products-list .product-card {
   display: flex;
-  align-items: center;
+  align-items:flex-start;
   border: 1px solid #ccc;
   margin-bottom: 10px;
   padding: 10px;
@@ -31,11 +31,11 @@
   margin-right: 15px;
 }
 
-.view-toggle button {
+/* .view-toggle button {
   margin-right: 5px;
   padding: 5px 10px;
   cursor: pointer;
-}
+} */
 
 .filters select {
   padding: 5px;
@@ -51,9 +51,16 @@ display: block;
 }
 
 .product-image{
-  width: 100px;       
-  height: 120px;     
+  width: 80px;       
+  height: 80px;     
   object-fit: cover;  
   margin: 20px auto;    
   border-radius: 4px; 
+}
+
+.toggle-button{
+  display: flex;
+  align-items: left;
+  margin-left: 200px;
+  
 }

@@ -1,45 +1,25 @@
-<h2 style="text-align: center">I nostri prodotti</h2>
+<h2 class="text-center mb-4">PRODOTTI</h2>
 
-<div class="text-center mb-3">
-  <button class="btn btn-success" (click)="addProduct()">Aggiungi Prodotto</button>
-</div>
-
-<div class="d-flex justify-content-center align-items-center mb-3">
-  <label for="itemsPerPage" class="me-2">Tipo visualizzazioni: </label>
-  <select id="itemsPerPage" class="form-select w-auto" [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
-    <option *ngFor="let option of itemsPerPageOptions" [ngValue]="option">
-      {{ option === 'all' ? 'Tutti' : option }}
-    </option>
-  </select>
-</div>
-
-
-<div class="view-toggle" style="text-align: center; margin-bottom: 20px">
-  <button
-    (click)="setSelectMode('grid')"
-    [ngClass]="selectMode === 'grid' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'"
-  >
-    Grid
-  </button>
-
-  <button
-    (click)="setSelectMode('list')"
-    [ngClass]="selectMode === 'list' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'"
-  >
-    List
-  </button>
+<div class="d-flex justify-content-center align-items-center mb-4" style="gap: 10px;">
   <input
-    class="input_search form-control form-control-sm"
     type="text"
-    placeholder="ricerca prodotto"
+    class="form-control form-control-sm"
+    placeholder="Ricerca prodotto"
     [(ngModel)]="searchText"
-    aria-label=".form-control-sm"
+    style="min-width: 300px; max-width: 500px;"
   />
-  <div class="filters" style="text-align: center; margin-bottom: 20px; margin-top: 20px">
-    <div class="filters text-center mb-4">
-      <!-- <label for="sort" class="form-label me-2">Ordina per:</label> -->
-      <select id="sort" class="form-select d-inline-block w-auto" [(ngModel)]="orderType">
-        <option value="default">ORDINA PER:</option>
+  <button class="btn btn-success btn-sm" (click)="addProduct()">
+    Aggiungi Prodotto <i class="bi bi-plus-circle-dotted"></i>
+  </button>
+</div>
+
+<div class="container" style="max-width: 1500px;">
+  
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center">
+      <label for="sort" class="me-2 mb-0">Ordina per:</label>
+      <select id="sort" class="form-select form-select-sm w-auto" [(ngModel)]="orderType">
+        <option value="default">Default</option>
         <option value="nome-asc">Nome (A - Z)</option>
         <option value="nome-desc">Nome (Z - A)</option>
         <option value="price-asc">Prezzo crescente</option>
@@ -48,91 +28,117 @@
       </select>
     </div>
 
-    <div class="container my-4">
-      <!-- Vista GRID -->
-      <div *ngIf="selectMode === 'grid'" class="row g-4">
-        <div *ngFor="let product of pagedProducts" class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div class="card h-100 shadow-sm">
-            <img [src]="product.image" class="card-img-top product-image" alt="{{ product.nome }}" />
-            <div class="card-body d-flex flex-column">
-              <p class="card-title"> <strong>{{ product.nome }}  </strong> {{product.description }}</p>
-              <!-- <p class="card-text flex-grow-1">{{ product.description }}</p> -->
+    <div class="btn-group" role="group">
+      <button
+        (click)="setSelectMode('grid')"
+        [ngClass]="selectMode === 'grid' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'">
+        Grid
+      </button>
+      <button
+        (click)="setSelectMode('list')"
+        [ngClass]="selectMode === 'list' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'">
+        List
+      </button>
+    </div>
+  </div>
 
-              <p class="fw-bold text-primary mb-3">€{{ product.price }}</p>
-              <div class="btn-group w-100 mt-3" role="group">
-  <button class="btn btn-info btn-sm" (click)="viewProduct(product.id)">
-    Scopro di più
-  </button>
-  <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">
-    Modifica
-  </button>
-  <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
-    Elimina
-  </button>
-</div>
-            </div>
+  <!-- Vista GRID -->
+  <div *ngIf="selectMode === 'grid'" class="row g-4">
+    <div *ngFor="let product of pagedProducts" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        <img [src]="product.image" class="card-img-top product-image" alt="{{ product.nome }}" />
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.nome }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ product.description }}</h6>
+          <p class="fw-bold text-primary mb-3">€{{ product.price }}</p>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-secondary" (click)="viewProduct(product.id)">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="editProduct(product.id)">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="deleteProduct(product.id)">
+              <i class="bi bi-trash"></i>
+            </button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Vista LIST -->
-      <div *ngIf="selectMode === 'list'" class="table-responsive mt-4">
-        <table class="table table-striped table-bordered align-middle text-center">
-          <thead class="table-light">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Immagine</th>
-              <th scope="col">Articolo</th>
-              <th scope="col">Prezzo</th>
-              <th>Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let product of pagedProducts; let i = index">
-              <th scope="row">{{ i + 1 }}</th>
-              <img [src]="product.image" class="product-image"/>
+  <!-- Vista LIST -->
+  <div *ngIf="selectMode === 'list'" class="table-responsive mt-3">
+    <table class="table table-striped table-bordered align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Immagine</th>
+          <th scope="col">Articolo</th>
+          <th scope="col">Prezzo</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of pagedProducts; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td><img [src]="product.image" class="product-image" alt="{{ product.nome }}" /></td>
+          <td>
+            <div class="text-start ps-1"><strong>{{ product.nome }}</strong></div>
+            <div class="text-start ps-1">{{ product.description }}</div>
+          </td>
+          <td> <div class="text-end ps-1">{{ product.price | currency:'EUR' }} </div>
+          <td>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-secondary" (click)="viewProduct(product.id)">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="editProduct(product.id)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="deleteProduct(product.id)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-              <td><strong>{{ product.nome }}  </strong> {{product.description }}</td>
+  <p *ngIf="pagedProducts.length === 0" class="text-center mt-4">Nessun prodotto trovato.</p>
 
-              <!-- <td>{{ product.description }}</td>  -->
-              <td>€{{ product.price }}</td>
-              <td>
-        <div class="btn-group w-100 mt-3" role="group">
-  <button class="btn btn-info btn-sm" (click)="viewProduct(product.id)">
-    Scopro di più
-  </button>
-  <button class="btn btn-primary btn-sm" (click)="editProduct(product.id)">
-    Modifica
-  </button>
-  <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
-    Elimina
-  </button>
-</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <!-- Paginazione -->
+    <div class="d-flex justify-content-center flex-grow-1">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()">Previous</a>
+          </li>
+          <li class="page-item"
+              *ngFor="let page of [].constructor(totalPages); let i = index"
+              [class.active]="currentPage === i + 1">
+            <a class="page-link" href="#" (click)="currentPage = i + 1; $event.preventDefault()">
+              {{ i + 1 }}
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-    <div class="text-center mt-3" *ngIf="totalPages > 1">
-      <button
-        class="btn btn-sm btn-outline-dark me-2"
-        (click)="prevPage()"
-        [disabled]="currentPage === 1"
-      >
-        Prev
-      </button>
-      <span>Pagina {{ currentPage }} di {{ totalPages }}</span>
-      <button
-        class="btn btn-sm btn-outline-dark ms-2"
-        (click)="nextPage()"
-        [disabled]="currentPage === totalPages"
-      >
-        Next
-      </button>
+    <!-- Tipo visualizzazioni a destra -->
+    <div class="d-flex align-items-center ms-3">
+      <label for="itemsPerPage" class="me-2 mb-0">Tipo visualizzazioni:</label>
+      <select id="itemsPerPage" class="form-select w-auto" [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+        <option *ngFor="let option of itemsPerPageOptions" [ngValue]="option">
+          {{ option === 'all' ? 'Tutti' : option }}
+        </option>
+      </select>
     </div>
-
-    <p *ngIf="pagedProducts.length === 0" class="text-center mt-4">Nessun prodotto trovato.</p>
   </div>
 </div>
