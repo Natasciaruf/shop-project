@@ -1,47 +1,55 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ProductsService } from '../../service/service';
+import { ApiService } from '../../service/api.service';
 import { products } from '../../model/model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { response } from 'express';
 
 @Component({
   selector: 'app-backoffice',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe],
+  imports: [CommonModule, FormsModule, CurrencyPipe, HttpClientModule],
   templateUrl: './backoffice.html',
   styleUrls: ['./backoffice.css'],
-  providers: [ProductsService]
+  providers: [ApiService],
 })
 export class Backoffice implements OnInit {
   products: products[] = [];
-  searchText = "";
+  searchText = '';
   orderType: string = 'default';
   selectMode: 'grid' | 'list' = 'list';
 
-  // visualizzazione per pagina
+  // visualizzazione per pagina 
   itemsPerPageOptions = [2, 4, 'all'] as const;
-  itemsPerPage: number | 'all' = 4; 
+  itemsPerPage: number = 4;
   currentPage = 1;
 
   private router = inject(Router);
+  private apiService = inject(ApiService);
 
-  constructor(private productsService: ProductsService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.products = this.productsService.getProducts();
+    this.apiService.getProducts().subscribe((response) => {
+      this.products = response.data || [];
+    });
   }
+
+loadProducts(){
+  //utilizzo questo metodo dopo ogni modifica come impaginazione, ricerca o ordinamento
+
+}
 
   setSelectMode(mode: 'grid' | 'list') {
     this.selectMode = mode;
   }
 
-  get filteredProducts() { 
+  get filteredProducts() {
     const text = this.searchText.toLowerCase();
-    let filtered = this.products.filter(p =>
-      p.nome.toLowerCase().includes(text)
-    );
+    let filtered = this.products.filter((p) => p.nome.toLowerCase().includes(text));
 
     switch (this.orderType) {
       case 'nome-asc':
@@ -65,7 +73,7 @@ export class Backoffice implements OnInit {
   }
 
   get pagedProducts() {
-    if (this.itemsPerPage === 'all') return this.filteredProducts;
+    console.log("pagedProducts called");   
 
     const perPage = this.itemsPerPage as number;
     const start = (this.currentPage - 1) * perPage;
@@ -74,7 +82,6 @@ export class Backoffice implements OnInit {
   }
 
   get totalPages() {
-    if (this.itemsPerPage === 'all') return 1;
     return Math.ceil(this.filteredProducts.length / (this.itemsPerPage as number));
   }
 
@@ -95,7 +102,7 @@ export class Backoffice implements OnInit {
   }
 
   deleteProduct(id: number) {
-    alert("Sei sicuro di voler eliminare il prodotto?");
+    alert('Sei sicuro di voler eliminare il prodotto?');
   }
 
   viewProduct(id: number) {
