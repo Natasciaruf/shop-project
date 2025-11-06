@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ApiService } from '../../service/api.service';
-import { products } from '../../model/model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { response } from 'express';
+
+import { ApiService } from '../../service/api.service';
+import { IProducts } from '../../model/model';
 
 @Component({
   selector: 'app-backoffice',
@@ -17,80 +16,85 @@ import { response } from 'express';
   providers: [ApiService],
 })
 export class Backoffice implements OnInit {
-  products: products[] = [];
+  products: IProducts[] | undefined;
   searchText = '';
   orderType: string = 'default';
   selectMode: 'grid' | 'list' = 'list';
 
-  // visualizzazione per pagina 
-  itemsPerPageOptions = [2, 4, 'all'] as const;
-  itemsPerPage: number = 4;
+  itemsPerPageOptions = [2, 5, 10, 100] as const;
+  itemsPerPage: number = 5;
   currentPage = 1;
+  totalPages = 1;
 
   private router = inject(Router);
   private apiService = inject(ApiService);
 
-  constructor() {}
-
   ngOnInit(): void {
-    this.apiService.getProducts().subscribe((response) => {
-      this.products = response.data || [];
-    });
+    this.loadProducts();
   }
 
-loadProducts(){
-  //utilizzo questo metodo dopo ogni modifica come impaginazione, ricerca o ordinamento
+  async loadProducts() {
+    const limit = this.itemsPerPage;
 
-}
+    const response = await this.apiService
+      .getProducts(this.currentPage, limit, this.orderType, this.searchText)
+      .toPromise();
+
+
+    this.products = response?.data || [];
+
+    this.totalPages = response?.pagination?.totalPages || 1;
+    this.currentPage = response?.pagination?.currentPage || 1;
+
+    // Ordinamento locale
+    switch (this.orderType) {
+      case 'nome-asc':
+        this.products.sort((a, b) => a.nome.localeCompare(b.nome));
+        break;
+      case 'nome-desc':
+        this.products.sort((a, b) => b.nome.localeCompare(a.nome));
+        break;
+      case 'price-asc':
+        this.products.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        this.products.sort((a, b) => b.price - a.price);
+        break;
+      case 'best-price':
+        this.products.sort((a, b) => a.price - b.price);
+        break;
+    }
+  }
 
   setSelectMode(mode: 'grid' | 'list') {
     this.selectMode = mode;
   }
 
-  get filteredProducts() {
-    const text = this.searchText.toLowerCase();
-    let filtered = this.products.filter((p) => p.nome.toLowerCase().includes(text));
-
-    switch (this.orderType) {
-      case 'nome-asc':
-        filtered.sort((a, b) => a.nome.localeCompare(b.nome));
-        break;
-      case 'nome-desc':
-        filtered.sort((a, b) => b.nome.localeCompare(a.nome));
-        break;
-      case 'price-asc':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'best-price':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-    }
-
-    return filtered;
-  }
-
-  get pagedProducts() {
-    console.log("pagedProducts called");   
-
-    const perPage = this.itemsPerPage as number;
-    const start = (this.currentPage - 1) * perPage;
-    const end = start + perPage;
-    return this.filteredProducts.slice(start, end);
-  }
-
-  get totalPages() {
-    return Math.ceil(this.filteredProducts.length / (this.itemsPerPage as number));
-  }
-
   prevPage() {
-    if (this.currentPage > 1) this.currentPage--;
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadProducts();
+    }
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages) this.currentPage++;
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadProducts();
+    }
+  }
+
+  changePage(i: number) {
+    if (this.currentPage) {
+      this.currentPage = i + 1
+      this.loadProducts()
+    }
+    
+  }
+
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.loadProducts();
   }
 
   addProduct() {
@@ -102,10 +106,17 @@ loadProducts(){
   }
 
   deleteProduct(id: number) {
-    alert('Sei sicuro di voler eliminare il prodotto?');
+    if (confirm('Sei sicuro di voler eliminare questoprodotto?')) {
+      this.apiService.deleteProduct(id).subscribe({
+        next: () => {
+          alert(`Prodotto ${id} eliminato correttamente`);
+          this.loadProducts();
+        },
+      });
+    }
   }
 
   viewProduct(id: number) {
-    this.router.navigate(['/backoffice/products', id]);
+    this.router.navigate(['/backoffice/products/', id]);
   }
 }

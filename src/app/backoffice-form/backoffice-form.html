@@ -2,8 +2,7 @@
   {{ mode === 'add' ? 'Aggiungi un nuovo prodotto' : 'Modifica prodotto' }}
 </h2>
 
-
-<form (ngSubmit)="submitForm()" class="container" *ngIf="product">
+<form #productForm="ngForm" (ngSubmit)="submitForm(productForm)" class="container" *ngIf="product">
   <div class="row mb-3">
     <label for="nome" class="col-sm-2 col-form-label">Nome prodotto</label>
     <div class="col-sm-10">
@@ -14,7 +13,11 @@
         [(ngModel)]="product.nome"
         name="nome"
         required
+        #nomeInput="ngModel"
       />
+      <div *ngIf="nomeInput.invalid && nomeInput.touched" class="text-danger mt-1">
+        Il campo Nome è obbligatorio
+      </div>
     </div>
   </div>
 
@@ -27,7 +30,12 @@
         [(ngModel)]="product.description"
         name="description"
         rows="3"
+        required
+        #descInput="ngModel"
       ></textarea>
+      <div *ngIf="descInput.invalid && descInput.touched" class="text-danger mt-1">
+        Il campo Descrizione è obbligatorio
+      </div>
     </div>
   </div>
 
@@ -42,30 +50,24 @@
         name="price"
         min="0"
         step="0.01"
-      />
+        required
+        #priceInput="ngModel"
+      /> 
+      <div *ngIf="priceInput.invalid && priceInput.touched" class="text-danger mt-1">
+        Il campo Prezzo è obbligatorio
+      </div>
     </div>
   </div>
 
   <div class="row mb-3">
     <label for="image" class="col-sm-2 col-form-label">URL immagine</label>
     <div class="col-sm-10">
-      <input
-        type="text"
-        id="image"
-        class="form-control"
-        [(ngModel)]="product.image"
-        name="image"
-      />
+      <input type="text" id="image" class="form-control" [(ngModel)]="product.image" name="image" />
     </div>
   </div>
 
   <div class="text-center mb-3" *ngIf="product.image">
-    <img
-      [src]="product.image"
-      alt="Anteprima"
-      class="img-thumbnail"
-      style="max-width: 200px;"
-    />
+    <img [src]="product.image" alt="Anteprima" class="img-thumbnail" style="max-width: 200px" />
   </div>
 
   <div class="text-center">

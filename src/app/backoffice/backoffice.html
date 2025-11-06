@@ -1,24 +1,30 @@
 <h2 class="text-center mb-4">PRODOTTI</h2>
 
-<div class="d-flex justify-content-center align-items-center mb-4" style="gap: 10px;">
+<div class="d-flex justify-content-center align-items-center mb-4" style="gap: 10px">
   <input
     type="text"
     class="form-control form-control-sm"
     placeholder="Ricerca prodotto"
     [(ngModel)]="searchText"
-    style="min-width: 300px; max-width: 500px;"
+    style="min-width: 300px; max-width: 500px"
   />
+  <button class="btn btn-primary btn-sm" (click)="loadProducts()">Cerca</button>
+
   <button class="btn btn-success btn-sm" (click)="addProduct()">
     Aggiungi Prodotto <i class="bi bi-plus-circle-dotted"></i>
   </button>
 </div>
 
-<div class="container" style="max-width: 1500px;">
-  
+<div class="container" style="max-width: 1500px">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex align-items-center">
       <label for="sort" class="me-2 mb-0">Ordina per:</label>
-      <select id="sort" class="form-select form-select-sm w-auto" [(ngModel)]="orderType">
+      <select
+        id="sort"
+        class="form-select form-select-sm w-auto"
+        [(ngModel)]="orderType"
+        (ngModelChange)="loadProducts()"
+      >
         <option value="default">Default</option>
         <option value="nome-asc">Nome (A - Z)</option>
         <option value="nome-desc">Nome (Z - A)</option>
@@ -31,12 +37,14 @@
     <div class="btn-group" role="group">
       <button
         (click)="setSelectMode('grid')"
-        [ngClass]="selectMode === 'grid' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'">
+        [ngClass]="selectMode === 'grid' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'"
+      >
         Grid
       </button>
       <button
         (click)="setSelectMode('list')"
-        [ngClass]="selectMode === 'list' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'">
+        [ngClass]="selectMode === 'list' ? 'btn btn-dark btn-sm' : 'btn btn-outline-dark btn-sm'"
+      >
         List
       </button>
     </div>
@@ -50,7 +58,7 @@
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ product.nome }}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{ product.description }}</h6>
-          <p class=" mb-3 text-end">€{{ product.price | currency: 'EUR'}}</p>
+          <p class="mb-3 text-end">€{{ product.price | currency : 'EUR' }}</p>
           <div class="btn-group" role="group">
             <button type="button" class="btn btn-secondary" (click)="viewProduct(product.id)">
               <i class="bi bi-eye"></i>
@@ -80,34 +88,39 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products; let i = index">
-          <th scope="row">{{ i + 1 }}</th>
-          <td><img [src]="product.image" class="product-image" alt="{{ product.nome }}" /></td>
+        @for( p of products; track $index; let i = $index) {
+        <tr>
+          <td scope="row">{{ i + 1 }}</td>
+          <td><img [src]="p.image" class="product-image" alt="{{ p.nome }}" /></td>
           <td>
-            <div class="text-start ps-1"><strong>{{ product.nome }}</strong></div>
-            <div class="text-start ps-1">{{ product.description }}</div>
+            <div class="text-start ps-1">
+              <strong>{{ p.nome }}</strong>
+            </div>
+            <div class="text-start ps-1">{{ p.description }}</div>
           </td>
-          <td> <div class="text-end ps-1">{{ product.price | currency:'EUR' }} </div>
+          <td>
+            <div class="text-end ps-1">{{ p.price | currency : 'EUR' }}</div>
+          </td>
           <td>
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-secondary" (click)="viewProduct(product.id)">
+              <button type="button" class="btn btn-secondary" (click)="viewProduct(p.id)">
                 <i class="bi bi-eye"></i>
               </button>
-              <button type="button" class="btn btn-secondary" (click)="editProduct(product.id)">
+              <button type="button" class="btn btn-secondary" (click)="editProduct(p.id)">
                 <i class="bi bi-pencil"></i>
               </button>
-              <button type="button" class="btn btn-secondary" (click)="deleteProduct(product.id)">
+              <button type="button" class="btn btn-secondary" (click)="deleteProduct(p.id)">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
           </td>
         </tr>
+        }
       </tbody>
     </table>
   </div>
 
-  <p *ngIf="products.length === 0" class="text-center mt-4">Nessun prodotto trovato.</p>
-
+  <p *ngIf="products?.length === 0" class="text-center mt-4">Nessun prodotto trovato.</p>
 
   <div class="d-flex justify-content-between align-items-center mt-3">
     <!-- Paginazione -->
@@ -117,10 +130,12 @@
           <li class="page-item" [class.disabled]="currentPage === 1">
             <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()">Previous</a>
           </li>
-          <li class="page-item"
-              *ngFor="let page of [].constructor(totalPages); let i = index"
-              [class.active]="currentPage === i + 1">
-            <a class="page-link" href="#" (click)="currentPage = i + 1; $event.preventDefault()">
+          <li
+            class="page-item"
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1"
+          >
+            <a class="page-link" href="#" (click)="changePage(i); $event.preventDefault()">
               {{ i + 1 }}
             </a>
           </li>
@@ -134,9 +149,14 @@
     <!-- Tipo visualizzazioni a destra -->
     <div class="d-flex align-items-center ms-3">
       <label for="itemsPerPage" class="me-2 mb-0">Tipo visualizzazioni:</label>
-      <select id="itemsPerPage" class="form-select w-auto" [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+      <select
+        id="itemsPerPage"
+        class="form-select w-auto"
+        [(ngModel)]="itemsPerPage"
+        (ngModelChange)="loadProducts()"
+      >
         <option *ngFor="let option of itemsPerPageOptions" [ngValue]="option">
-          {{ option === 'all' ? 'Tutti' : option }}
+          {{ option }}
         </option>
       </select>
     </div>

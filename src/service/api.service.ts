@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { products } from '../model/model';
+import { IProducts } from '../model/model';
 
 interface IApiResponse<T> {
   data: T;
+  pagination?:{
+      total: number;
+    totalPages: number;
+    currentPage: number;
+    limit: number;
+  };
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000'; //url base per il mio backend
+  private apiUrl = 'http://localhost:3000'; 
 
   constructor(private http: HttpClient) {}
 
@@ -20,8 +26,8 @@ getProducts(
   limit: number = 10,
   order: string = 'description_asc',
   search: string = ''
-): Observable<IApiResponse<products[]>> {
-  return this.http.get<IApiResponse<products[]>>(`${this.apiUrl}/backoffice/products`, {
+): Observable<IApiResponse<IProducts[]>> {
+  return this.http.get<IApiResponse<IProducts[]>>(`${this.apiUrl}/backoffice/products`, {
     params: {
       page: page.toString(),
       limit: limit.toString(),
@@ -37,29 +43,31 @@ getProducts(
   // }
 
 //get con id per il singolo prodotto
-  getProductByid(id: number): Observable<IApiResponse<products>> {
+  getProductByid(id: number): Observable<IApiResponse<IProducts>> {
     console.log('Fetching product with id:', id);
     console.log('Request URL:', `${this.apiUrl}/backoffice/products/${id}`);
-    return this.http.get<IApiResponse<products>>(`${this.apiUrl}/backoffice/products/${id}`);
+    return this.http.get<IApiResponse<IProducts>>(`${this.apiUrl}/backoffice/products/${id}`);
   }
 
   // post er creare un nuovo prodotto 
-  createProduct(newProduct: products): Observable<IApiResponse<products>> {
-    return this.http.post<IApiResponse<products>>(`${this.apiUrl}/backoffice/products`, newProduct);
+  createProduct(newProduct: IProducts): Observable<IApiResponse<IProducts>> {
+    return this.http.post<IApiResponse<IProducts>>(`${this.apiUrl}/backoffice/products`, newProduct);
   }
 
   // put per aggiornare totalmente un prodotto
-  updateProduct(id: number, updatedProduct: products): Observable<IApiResponse<products>> {
-    return this.http.put<IApiResponse<products>>(`${this.apiUrl}/backoffice/products/${id}`, updatedProduct);
+  updateProduct(id: number, updatedProduct: IProducts): Observable<IApiResponse<IProducts>> {
+    return this.http.put<IApiResponse<IProducts>>(`${this.apiUrl}/backoffice/products/${id}`, updatedProduct);
   }
 
   // patch per aggiornare parzialmente un prodotto
-  patchProduct(id: number, partialProduct: Partial<products>): Observable<IApiResponse<products>> {
-    return this.http.patch<IApiResponse<products>>(`${this.apiUrl}/backoffice/products/${id}`, partialProduct);
+  patchProduct(id: number, partialProduct: Partial<IProducts>): Observable<IApiResponse<IProducts>> {
+    return this.http.patch<IApiResponse<IProducts>>(`${this.apiUrl}/backoffice/products/${id}`, partialProduct);
   }
 
   // delete per eliminare
-  deleteProduct(id: number): Observable<IApiResponse<null>> {
-    return this.http.delete<IApiResponse<null>>(`${this.apiUrl}/backoffice/products/${id}`);
-  }
+deleteProduct(id: number) {
+  return this.http.delete<{ data: null; message: string }>(
+    `http://localhost:3000/backoffice/products/${id}`
+  );
+}
 }

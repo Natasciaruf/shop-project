@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../service/api.service';
 import { HttpClientModule } from '@angular/common/http';
+import { response } from 'express';
 
 @Component({
   selector: 'app-product-detail',
@@ -22,7 +23,9 @@ export class ProductDetail implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-this.product = this.productsService.getProductByid(id);
+this.productsService.getProductByid(id).subscribe((response) => {
+  this.product = response.data
+})
 
   }
 }
