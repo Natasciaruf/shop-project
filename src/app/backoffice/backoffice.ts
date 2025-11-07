@@ -20,6 +20,8 @@ export class Backoffice implements OnInit {
   searchText = '';
   orderType: string = 'default';
   selectMode: 'grid' | 'list' = 'list';
+  brands: string[] = [];
+  selectedBrand: string = '';
 
   itemsPerPageOptions = [2, 5, 10, 100] as const;
   itemsPerPage: number = 5;
@@ -37,14 +39,18 @@ export class Backoffice implements OnInit {
     const limit = this.itemsPerPage;
 
     const response = await this.apiService
-      .getProducts(this.currentPage, limit, this.orderType, this.searchText)
+      .getProducts(this.currentPage, limit, this.orderType, this.searchText, this.selectedBrand)
       .toPromise();
-
 
     this.products = response?.data || [];
 
     this.totalPages = response?.pagination?.totalPages || 1;
     this.currentPage = response?.pagination?.currentPage || 1;
+
+  // popola lista brand una sola volta
+  // if (!this.brands.length) {
+  //   this.brands = [...new Set(this.products.map(p => p.brand))];
+  // }
 
     // Ordinamento locale
     switch (this.orderType) {
@@ -86,10 +92,9 @@ export class Backoffice implements OnInit {
 
   changePage(i: number) {
     if (this.currentPage) {
-      this.currentPage = i + 1
-      this.loadProducts()
+      this.currentPage = i + 1;
+      this.loadProducts();
     }
-    
   }
 
   onItemsPerPageChange() {

@@ -25,14 +25,16 @@ getProducts(
   page: number = 1,
   limit: number = 10,
   order: string = 'description_asc',
-  search: string = ''
+  search: string = '',
+  brand: string = '',
 ): Observable<IApiResponse<IProducts[]>> {
   return this.http.get<IApiResponse<IProducts[]>>(`${this.apiUrl}/backoffice/products`, {
     params: {
       page: page.toString(),
       limit: limit.toString(),
       order,
-      search
+      search,
+      brand,
     }
   });
 }
@@ -69,5 +71,10 @@ deleteProduct(id: number) {
   return this.http.delete<{ data: null; message: string }>(
     `http://localhost:3000/backoffice/products/${id}`
   );
+}
+
+//get per prendere un prodotto dal brand 
+getProductsByBrand(brand: string): Observable<IProducts[]> {
+  return this.http.get<IProducts[]>(`http://localhost:3000/backoffice/brands/${brand}`);
 }
 }

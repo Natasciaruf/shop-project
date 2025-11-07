@@ -1,0 +1,24 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nome Brand</th>
+      <th scope="col">Logo</th>
+      <th scope="col">Azioni</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let brand of brands; let i = index">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ brand.nome }}</td>
+      <td>
+        <img *ngIf="brand.logo" [src]="brand.logo" alt="{{ brand.nome }}" width="50" />
+        <span *ngIf="!brand.logo">N/A</span>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-primary" (click)="editBrand(brand.id)">Modifica</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteBrand(brand.id)">Elimina</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
