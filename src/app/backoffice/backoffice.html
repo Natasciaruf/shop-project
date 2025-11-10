@@ -36,22 +36,17 @@
     </div>
     <!-- fine -->
 
-    <!-- select per il brand -->
-    <div class="d-flex align-items-center">
-      <select
-        id="Brand"
-        class="form-select-sm"
-        aria-label="Default select example"
-        [(ngModel)]="selectedBrand"
-        (ngModelChange)="loadProducts()"
-      >
-        <option selected value="">Brand</option>
-        <option value="Nike">Nike</option>
-        <option value="Adidas">Adidas</option>
-        <option value="Prada">Prada</option>
-      </select>
-    </div>
-    <!-- fine -->
+<select
+  id="Brand"
+  class="form-select-sm"
+  aria-label="Default select example"
+  [(ngModel)]="selectedBrand"
+  (ngModelChange)="loadProducts()"
+>
+  <option value="">Brand</option>
+  <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+</select>
+
 
     <div class="btn-group" role="group">
       <button
@@ -82,13 +77,13 @@
             <button type="button" class="btn btn-secondary" (click)="viewProduct(product.id)">
               <i class="bi bi-eye"></i>
             </button>
-            <button type="button" class="btn btn-secondary" (click)="editProduct(product.id)">
+            <button type="button" class="btn btn-primary" (click)="editProduct(product.id)">
               <i class="bi bi-pencil"></i>
             </button>
-            <button type="button" class="btn btn-secondary" (click)="deleteProduct(product.id)">
+            <button type="button" class="btn btn-danger" (click)="deleteProduct(product.id)">
               <i class="bi bi-trash"></i>
             </button>
-            <h6 class="card-subtitle mb-2 text-muted">{{ product.brand }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">{{ product.brand_id }}</h6>
           </div>
         </div>
       </div>
@@ -140,7 +135,7 @@
           </td>
           <td>
             <div class="text-start ps-1">
-              {{ p.brand }}
+              {{ p.brand_id}}
             </div>
           </td>
         </tr>

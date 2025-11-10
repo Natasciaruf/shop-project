@@ -1,25 +1,14 @@
-// // import { Component } from '@angular/core';
-// import { RouterLink, RouterOutlet } from '@angular/router';
-// @Component({
-//   selector: 'app-brands',
-//   imports: [RouterLink, RouterOutlet],
-//   templateUrl: './brands.html',
-//   styleUrl: './brands.css',
-// })
-// export class Brands {
-
-// }
-
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { BrandService, IBrand } from '../../service/brand.service';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-brands',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule,],
   templateUrl: './brands.html',
   styleUrls: ['./brands.css'],
   providers: [BrandService]
@@ -27,6 +16,7 @@ import { Observable } from 'rxjs';
 export class Brands implements OnInit {
   brands: IBrand [] = [];
 
+  private router = inject(Router);
   constructor(private brandService: BrandService) {}
 
   ngOnInit(): void {
@@ -37,14 +27,18 @@ loadBrands() {
   this.brandService.getBrands().subscribe({
     next: (res) => {
       console.log('Dati ricevuti dal backend:', res);
- ;
+ this.brands = res.data;
     },
     error: (err) => console.error('Errore nel caricamento dei brand', err)
   });
 }
 
+addBrand(){
+  this.router.navigate(['brands/add'])
+}
+
   editBrand(id: number) {
-    console.log('Modifica brand con ID:', id);
+    this.router.navigate(['brands/edit', id])
   }
 
   deleteBrand(id: number) {

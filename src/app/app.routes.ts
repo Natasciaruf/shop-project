@@ -5,6 +5,7 @@ import { Backoffice } from './backoffice/backoffice';
 import { BackofficeForm } from './backoffice-form/backoffice-form';
 import { ProductDetail } from './product-detail/product-detail';
 import { Brands } from './brands/brands';
+import { BrandFormComponent } from './brands-form.ts/brands-form';
 
 export const routes: Routes = [
 {path: '', component: Home },
@@ -14,4 +15,6 @@ export const routes: Routes = [
 {path: 'backoffice/products/edit/:id', component: BackofficeForm},
 { path: 'backoffice/products/:id', component: ProductDetail },
 { path: 'brands', component: Brands },
+{path: 'brands/edit/:id', component: BrandFormComponent},
+{path: 'brands/add', component: BrandFormComponent}
 ];

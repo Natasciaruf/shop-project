@@ -4,24 +4,25 @@ import { Observable } from 'rxjs';
 
 export interface IBrand {
   id: number;
-  nome: string;
-  logo?: string;
+  name: string;
+  description: string;
+  logo_url?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class BrandService {
-  private apiUrl = 'http://localhost:3000/brands'; 
+  private apiUrl = 'http://localhost:3000/brands';
 
   constructor(private http: HttpClient) {}
 
-  getBrands(): Observable<IBrand[]> {
-    return this.http.get<IBrand[]>(this.apiUrl);
+  getBrands(): Observable<{ data: IBrand[] }> {
+    return this.http.get<{ data: IBrand[] }>(this.apiUrl);
   }
 
-  getBrand(id: number): Observable<IBrand> {
-    return this.http.get<IBrand>(`${this.apiUrl}/${id}`);
+  getBrandById(id: number): Observable<{ data: IBrand }> {
+    return this.http.get<{ data: IBrand }>(`${this.apiUrl}/${id}`);
   }
 
   createBrand(brand: Partial<IBrand>): Observable<IBrand> {

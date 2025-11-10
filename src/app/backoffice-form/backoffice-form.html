@@ -1,6 +1,19 @@
+<div class="container mb-3">
+  <div class="d-flex justify-content-start">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="router.navigate(['/backoffice'])"
+    >
+      Torna al backoffice
+    </button>
+  </div>
+</div>
+
 <h2 class="text-center mb-4">
   {{ mode === 'add' ? 'Aggiungi un nuovo prodotto' : 'Modifica prodotto' }}
 </h2>
+
 
 <form #productForm="ngForm" (ngSubmit)="submitForm(productForm)" class="container" *ngIf="product">
   <div class="row mb-3">

@@ -3,6 +3,6 @@ export interface IProducts {
   nome: string;
   description: string;
   price: number;
-   brand?: string;
+    brand_id: number;
   image?: string;
 }

@@ -3,6 +3,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Nome Brand</th>
+        <th scope="col">Descrizione</th>
       <th scope="col">Logo</th>
       <th scope="col">Azioni</th>
     </tr>
@@ -10,14 +11,22 @@
   <tbody>
     <tr *ngFor="let brand of brands; let i = index">
       <th scope="row">{{ i + 1 }}</th>
-      <td>{{ brand.nome }}</td>
+      <td>{{ brand.name }}</td>
+        <td>{{ brand.description }}</td>
       <td>
-        <img *ngIf="brand.logo" [src]="brand.logo" alt="{{ brand.nome }}" width="50" />
-        <span *ngIf="!brand.logo">N/A</span>
+        <img *ngIf="brand.logo_url" [src]="brand.logo_url" alt="{{ brand.name }}" width="50" />
+        <span *ngIf="!brand.logo_url">N/A</span>
+
       </td>
       <td>
-        <button class="btn btn-sm btn-primary" (click)="editBrand(brand.id)">Modifica</button>
-        <button class="btn btn-sm btn-danger" (click)="deleteBrand(brand.id)">Elimina</button>
+             <div class="btn-group" role="group">
+              <button type="button" class="btn btn-primary" (click)="editBrand(brand.id)"> <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-success" (click)="addBrand()"> <i class="bi bi-plus-circle-dotted"></i>
+              </button>
+              <button type="button" class="btn btn-danger" (click)="deleteBrand(brand.id)">
+              <i class="bi bi-trash"></i></button>
+            </div>
       </td>
     </tr>
   </tbody>

@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
 import { IProducts } from '../../model/model';
 import { HttpClientModule } from '@angular/common/http';
+import { BrandService, IBrand } from '../../service/brand.service';
 
 
 @Component({
@@ -12,10 +13,10 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './backoffice-form.html',
-  providers: [ApiService]
+  providers: [ApiService,]
 })
 export class BackofficeForm implements OnInit {
-  mode: 'add' | 'edit' = 'add';
+  mode: 'add' | 'edit' = 'add'; 
   productId?: number;
 
   product: IProducts = {
@@ -23,7 +24,9 @@ export class BackofficeForm implements OnInit {
     nome: '',
     description: '',
     price: 0,
+    brand_id: 0,
     image: '',
+    
   };
 
   private productsService = inject(ApiService);
@@ -34,7 +37,7 @@ export class BackofficeForm implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.mode = 'edit';
+        this.mode = 'edit' ;
         this.productId = +id;
 
         this.productsService.getProductByid(this.productId).subscribe(productResponse => {

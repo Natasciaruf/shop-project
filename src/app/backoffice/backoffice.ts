@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { ApiService } from '../../service/api.service';
 import { IProducts } from '../../model/model';
+import { BrandService } from '../../service/brand.service';
 
 @Component({
   selector: 'app-backoffice',
@@ -76,6 +77,15 @@ export class Backoffice implements OnInit {
     this.selectMode = mode;
   }
 
+  // async loadBrands() {
+  // try {
+  //   const response = await this.getBrands().toPromise();
+  //   // Salva i nomi dei brand nell'array
+  //   this.brands = response?.data?.map((b: any) => b.name) || [];
+  // } catch (err) {
+  //   console.error('Errore nel caricamento dei brand', err);
+  // }
+// }
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
